@@ -26,7 +26,7 @@ public class ParkingService {
     @Transactional
     public ParkingTicket parkVehicle(String vehicleNo, String vehicleType,int hours){
 
-        ParkingSlot slot=parkingSlotRepo.findFirstBySupportedVehicleTypeAndOccupiedFalse(vehicleType).orElseThrow(()-> new SlotNotAvailableException("No slot available "));
+        ParkingSlot slot=parkingSlotRepo.findFreeSlotWithLock(vehicleType).orElseThrow(()-> new SlotNotAvailableException("No slot available "));
 
         slot.setOccupied(true);
         parkingSlotRepo.save(slot);
@@ -41,6 +41,7 @@ public class ParkingService {
         parkingTicket.setEntryTime(LocalDateTime.now());
         parkingTicket.setActive(true);
 
+        parkingTicket.setParkingSlot(slot);
 
 
         return parkingTicketRepo.save(parkingTicket);
@@ -60,7 +61,7 @@ public class ParkingService {
 
         //free the slot
 
-        ParkingSlot slot=parkingSlotRepo.findById(ticket.getId()).orElseThrow(()->new RuntimeException("Slot not found "));
+        ParkingSlot slot=ticket.getParkingSlot();
 
         slot.setOccupied(false);
         parkingSlotRepo.save(slot);
