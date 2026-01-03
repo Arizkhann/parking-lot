@@ -22,7 +22,6 @@ public class ParkingService {
     private  final ParkingTicketRepo parkingTicketRepo;
     private final PricingStrategy pricingStrategy;
 
-
     @Transactional
     public ParkingTicket parkVehicle(String vehicleNo, String vehicleType,int hours){
 
@@ -42,7 +41,6 @@ public class ParkingService {
         parkingTicket.setActive(true);
 
         parkingTicket.setParkingSlot(slot);
-
 
         return parkingTicketRepo.save(parkingTicket);
 
